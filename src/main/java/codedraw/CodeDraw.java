@@ -87,6 +87,8 @@ public class CodeDraw implements AutoCloseable {
 	private EventCollection events;
 	private Subscription ctrlCSubscription;
 	private boolean isInstantDraw = false;
+	private boolean hasDelay = false;
+	private Long delay = 0L;
 
 	/**
 	 * When InstantDraw is disabled CodeDraw will only draw shapes to the window once show is called.
@@ -106,6 +108,22 @@ public class CodeDraw implements AutoCloseable {
 	 */
 	public void setInstantDraw(boolean isInstantDraw) {
 		this.isInstantDraw = isInstantDraw;
+	}
+
+	/**
+	 * When hasDelay and InstantDraw are enabled, CodeDraw draws to the window with a delay.
+	 * @param hasDelay defines whether CodeDraw uses a delay to draw.
+	 */
+	public void setHasDelay(boolean hasDelay) {
+		this.hasDelay = hasDelay;
+	}
+
+	/**
+	 * Delay to delay shows in InstantDrawMode.
+	 * @param delay defines how much show commands are delayed.
+	 */
+	public void setDelay(Long delay) {
+		this.delay = delay;
 	}
 
 	/**
@@ -1102,7 +1120,13 @@ public class CodeDraw implements AutoCloseable {
 	}
 
 	private void afterDrawing() {
-		if (isInstantDraw) show();
+		if (isInstantDraw) {
+			if (hasDelay) {
+				show(delay);
+			} else {
+				show();
+			}
+		}
 	}
 
 	@Override
